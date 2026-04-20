@@ -1,0 +1,14 @@
+.led-matrix {
+  display: block;
+  /* Scale the canvas to fit whichever dimension of the parent is smaller
+   * while keeping its square aspect ratio. */
+  width: auto;
+  height: auto;
+  max-width: 100%;
+  max-height: 100%;
+  aspect-ratio: 1 / 1;
+  /* LEDs need dark contrast to show colors — keep this panel dark regardless of theme. */
+  background: #0a0a0b;
+  border-radius: var(--dimension-radius-large);
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.15);
+}

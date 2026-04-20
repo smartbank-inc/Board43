@@ -1,0 +1,21 @@
+.resize-handle {
+  background: transparent;
+  transition: background-color var(--duration-scale-400)
+    var(--cubic-bezier-motion-enter);
+  flex-shrink: 0;
+}
+
+.resize-handle:hover,
+.resize-handle.dragging {
+  background: var(--color-interactive-base);
+}
+
+.resize-handle-horizontal {
+  width: var(--dimension-spacing-extra-small);
+  cursor: col-resize;
+}
+
+.resize-handle-vertical {
+  height: var(--dimension-spacing-extra-small);
+  cursor: row-resize;
+}

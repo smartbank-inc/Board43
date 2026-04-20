@@ -1,0 +1,25 @@
+# Board43 Reference Manual
+
+> Board43 is a compact RP2350-based board for PicoRuby demonstrations: a 16×16 WS2812 RGB matrix, 6-axis IMU (LSM6DS3TR), four user buttons, buzzer, USB-C, SWD header, and a 10-pin expansion edge. Prepared by SmartBank, Inc.
+
+Edition 1.0.0. The full manual is available inline in [llms-full.txt](llms-full.txt).
+
+## Hardware
+
+- [Identification](llms-full.txt#identification): board overview, summary data, and naming story.
+- [System Controls](llms-full.txt#system-controls): BOOT/RUN buttons, reset sequences, status LED patterns.
+- [Features](llms-full.txt#features): functional unit breakdown and wiring facts.
+- [GPIO Pin Map](llms-full.txt#gpio-pin-map): onboard pin assignments and `Board43::GPIO_*` constants.
+- [Expansion Header](llms-full.txt#expansion-header): `J2` 1×10 header pinout.
+
+## Software
+
+- [PicoRuby Setup](llms-full.txt#picoruby-setup): firmware download, flashing, serial connection, auto-start behavior.
+- [Initial Validation Operations](llms-full.txt#initial-validation-operations): PicoRuby snippets for status LED, buttons, buzzer, LED matrix, IMU.
+- [Firmware Build](llms-full.txt#firmware-build): building R2P2 from source on macOS and Linux.
+- [Debugging](llms-full.txt#debugging): SWD header and Raspberry Pi Debug Probe.
+
+## Optional
+
+- [Important Manual Information](llms-full.txt#important-manual-information): notations, reference codes, cautions, disclaimer.
+- [Bill of Materials](llms-full.txt#bill-of-materials): component references, packages, LCSC part numbers.

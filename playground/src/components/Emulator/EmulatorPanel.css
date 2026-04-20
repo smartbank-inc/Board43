@@ -1,0 +1,77 @@
+.emulator-panel {
+  height: 100%;
+  background: var(--color-background-default-base);
+}
+
+/* Simulator toolbars (paint tools, animation selection, etc.) */
+.emulator-toolbar {
+  padding: var(--dimension-spacing-two-extra-small)
+    var(--dimension-spacing-extra-small);
+  justify-content: center;
+  transition: opacity var(--duration-scale-300) var(--cubic-bezier-motion-enter);
+  flex-shrink: 0;
+}
+
+.emulator-toolbar.toolbar-disabled {
+  opacity: var(--opacity-state-disabled);
+  pointer-events: none;
+}
+
+.toolbar-sep {
+  width: 1px;
+  height: var(--dimension-scale-16);
+  background: var(--color-border-default-low);
+  margin: 0 var(--dimension-spacing-three-extra-small);
+}
+
+.emulator-content {
+  padding: var(--dimension-spacing-medium);
+  gap: var(--dimension-spacing-medium);
+  min-height: 0;
+  min-width: 0;
+}
+
+.emulator-matrix-container {
+  /* Let the matrix shrink freely to its square aspect ratio. */
+  min-width: 0;
+  min-height: 0;
+  height: 100%;
+  width: 100%;
+}
+
+.color-btn {
+  width: 18px;
+  height: 18px;
+  padding: 0;
+  border: 2px solid transparent;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: transform var(--duration-scale-200)
+    var(--cubic-bezier-motion-enter);
+}
+
+.color-btn:hover {
+  transform: scale(1.1);
+}
+
+.color-btn.selected {
+  border-color: var(--color-text-default-high);
+}
+
+.color-picker {
+  width: 24px;
+  height: 18px;
+  padding: 0;
+  border: none;
+  cursor: pointer;
+  background: transparent;
+}
+
+.color-picker::-webkit-color-swatch-wrapper {
+  padding: 0;
+}
+
+.color-picker::-webkit-color-swatch {
+  border: 1px solid var(--color-border-default-low);
+  border-radius: 50%;
+}

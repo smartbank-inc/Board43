@@ -1,0 +1,16 @@
+[package]
+name = "board43-document-compiler"
+version = "0.2.0"
+edition = "2024"
+
+[dependencies]
+clap = { version = "4.6", features = ["derive"] }
+env_logger = "0.11"
+jiff = "0.2"
+log = "0.4"
+lopdf = "0.39"
+serde = { version = "1", features = ["derive"] }
+serde_yml = "0.0.12"
+tempdir = "0.3"
+tokio = { version = "1.50", features = ["full"] }
+typwriter = { version = "0.14", features = ["compile", "embed_noto_sans_jp", "embed_jet_brains_mono_nl", "embed_warpnine_sans", "format", "pdf_metadata", "watch"] }

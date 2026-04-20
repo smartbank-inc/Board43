@@ -1,0 +1,51 @@
+name: Build document
+
+on:
+  push:
+    tags:
+      # document-MAJOR.MINOR.PATCH (e.g. document-1.0.0)
+      - "document-[0-9]*.[0-9]*.[0-9]*"
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write  # create release, upload assets
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
+        with:
+          persist-credentials: false
+
+      - uses: dtolnay/rust-toolchain@29eef336d9b2848a0b548edc03f92a220660cdb8 # stable
+        with:
+          toolchain: stable
+
+      - uses: Swatinem/rust-cache@c19371144df3bb44fab255c43d04cbc2ab54d1c4 # v2.9.1
+        with:
+          workspaces: docs
+
+      # typwriter's build.rs downloads fonts into ~/.cache/typwriter/ and
+      # the generated `embed_*.rs` in target/ hard-codes absolute paths into
+      # that cache via include_bytes!. rust-cache above restores target/ but
+      # not ~/.cache/typwriter/, which leaves the include paths dangling on
+      # subsequent runs (cargo treats the build script as up-to-date and
+      # doesn't re-download). Cache both together so they stay in sync.
+      - uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5.0.5
+        with:
+          path: ~/.cache/typwriter
+          key: typwriter-fonts-${{ runner.os }}-${{ hashFiles('docs/Cargo.lock') }}
+          restore-keys: |
+            typwriter-fonts-${{ runner.os }}-
+
+      - name: Compile reference manual PDF
+        working-directory: docs
+        run: cargo run -- compile
+
+      - name: Create GitHub Release
+        if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/')
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TAG: ${{ github.ref_name }}
+          PDF_PATH: docs/reference-manual/reference-manual.pdf
+        run: gh release create "$TAG" "$PDF_PATH" --title "$TAG" --generate-notes

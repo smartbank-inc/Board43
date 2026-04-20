@@ -1,0 +1,16 @@
+title: Board43 Reference Manual
+author: SmartBank, Inc.
+subject: Hardware and firmware reference for Board43
+keywords:
+  - Board43
+  - RP2350
+  - PicoRuby
+  - RubyKaigi 2026
+language: en
+copyright_status: true
+custom_properties:
+  Hardware revision: "1.0.0"
+  Hardware engineering: "@masawada"
+  Firmware engineering: "@0x6b"
+  Applications engineering: "@chobishiba"
+  Documentation engineering: "@0x6b"

@@ -1,0 +1,26 @@
+loop do
+  # One full cycle: `offset` advances the picture one column per frame
+  {{WIDTH}}.times do |offset|
+    # Check the tilt sensor: if flipped, we'll rotate 180°
+    acc = imu.read_all[:acceleration]
+    flip = acc[0] < -0.5 if acc[0].abs > 0.5
+
+    # Draw the picture, shifted horizontally by `offset`
+    {{HEIGHT}}.times do |y|
+      dst_y = flip ? {{H_MINUS_1}} - y : y
+      {{WIDTH}}.times do |x|
+        src_x = (x + offset) % {{WIDTH}}
+        dst_x = flip ? {{W_MINUS_1}} - x : x
+        c = pattern[y][src_x]; led.set_rgb(dst_y * {{WIDTH}} + dst_x, c[0], c[1], c[2])
+      end
+    end
+    led.show
+
+    # Linger on the original picture at the start of each cycle
+    if offset == 0
+      sleep_ms 1000
+    else
+      sleep_ms delay_ms
+    end
+  end
+end

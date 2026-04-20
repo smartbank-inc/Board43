@@ -1,0 +1,519 @@
+# Board43 Reference Manual
+
+> Board43 is a compact RP2350-based board for PicoRuby demonstrations: a 16×16 WS2812 RGB matrix, 6-axis IMU (LSM6DS3TR), four user buttons, buzzer, USB-C, SWD header, and a 10-pin expansion edge. Prepared by SmartBank, Inc.
+
+Edition: 1.0.0. Reference code scheme: `B43-<edition>-<section>[-<subsection>]`.
+
+## Important Manual Information
+
+This manual is intended to explain the current Board43 hardware to engineers, speakers, and demo builders.
+
+### Notations
+
+Particularly important information is distinguished in this manual by the notations below. Treat each block according to the meaning defined here.
+
+> **WARNING** — Indicates a risk of physical injury, hardware damage, or fire. Read the entire notice and follow its guidance before proceeding.
+
+> **NOTICE** — Calls out information that affects correct operation. Ignoring a notice is not dangerous but may lead to unexpected behavior or broken results.
+
+> **TIP** — Shares a practical suggestion or useful context. Not required for correctness, but worth knowing.
+
+### Reference Codes
+
+Every section and subsection is tagged with a reference code in the form `B43-<edition>-<section>[-<subsection>]`. The components are:
+
+- **B43** — Fixed product prefix, identifying the Board43 reference manual.
+- **1.0.0** — Manual edition in `major.minor.patch` form. This printing is edition 1.0.0; later printings increment the numbers.
+- **section** — 1-based section index in document order.
+- **subsection** — Optional 1-based index of the subsection within its section.
+
+### How To Use This Manual
+
+- Use the section title at the top of the page as the functional category.
+- Read the subsection title before using a pin, connector, or device.
+- Treat every table as a stronger source of truth than surrounding prose.
+
+### Caution
+
+- The board has sharp edges. Handle and store with care to avoid injury.
+- Running LEDs at maximum brightness for extended periods may cause overheating or fire.
+- Some components contain lead. Wash your hands after handling.
+
+### Disclaimer
+
+- SmartBank, Inc. ("we") makes no guarantees regarding the completeness, accuracy, or usefulness of the information provided, and offers no support.
+- We assume no liability for any damage arising from the use, operation, downloading, or other actions related to the board or the information provided.
+
+## Identification
+
+### Board Identification
+
+Board43 is a compact RP2350-based custom board with a full-face 16×16 RGB matrix, integrated motion sensing, local user controls, and a constrained but useful public expansion edge.
+
+**Board Data**
+
+| Item                | Reference                  |
+| ------------------- | -------------------------- |
+| RP2350A             | `U3` MCU                   |
+| Flash               | `U5` W25Q32JVSS            |
+| Accel / Gyro / Temp | `U6` LSM6DS3TR             |
+| Status LED          | `D2` on `GP25`             |
+| LED matrix          | 256 × WS2812C-2020-V1      |
+| USB-C               | `USB1`                     |
+| System buttons      | `BOOT`, `RUN`              |
+| User buttons        | `SW3`, `SW4`, `SW5`, `SW6` |
+| Buzzer              | `BZ1` MLT-8530             |
+| Debug SWD           | `J1`                       |
+| Public header       | `J2` 1×10                  |
+| Mounting hole       | M3 (3.2 mm)                |
+| Board size          | 53.98 × 85.6 mm            |
+
+> **TIP** — The name Board43 honors B/43, SmartBank's prior consumer brand, now Onebank. Read phonetically in Japanese, 43 becomes 資産 (shisan, "assets") or 予算 (yosan, "budget"). In decimal ASCII, 43 is also the `+` character, which frames the board as a place to add your own ideas on top of what it provides: hardware `+` code `+` creation. The 53.98 × 85.6 mm board outline matches the ISO/IEC 7810 ID-1 credit card size, another reference to the fintech heritage.
+
+## System Controls
+
+### Board Buttons
+
+`BOOT` and `RUN` are board-level controls, not user inputs. They are not routed to GPIO and cannot be read from PicoRuby.
+
+**Button Roles**
+
+| Button | Function                                                                                                                    |
+| ------ | --------------------------------------------------------------------------------------------------------------------------- |
+| `BOOT` | Pulls the flash chip-select line low. The boot ROM samples this state at reset to decide whether to enter USB BOOTSEL mode. |
+| `RUN`  | Pulls the RP2350 `RUN` pin low. Resets the MCU while held.                                                                  |
+
+### Reset Sequences
+
+**Combinations**
+
+| Sequence                                                                             | Effect                                                                                    |
+| ------------------------------------------------------------------------------------ | ----------------------------------------------------------------------------------------- |
+| Hold `BOOT`, press `RUN`, release `BOOT`                                             | Reboot into USB BOOTSEL mode. The board mounts as `RP2350` mass storage for UF2 flashing. |
+| Hold `SW3`, press `RUN`, keep `SW3` held until the status LED double-flashes 3 times | Reboot with autostart skipped. Board43 firmware only; see Disabling Auto-Start.           |
+
+### Status LED Patterns
+
+**Status LED Behavior**
+
+| State                                    | Pattern                                                                 |
+| ---------------------------------------- | ----------------------------------------------------------------------- |
+| Powered on, idle                         | Steady on                                                               |
+| Autostart: `app.rb` / `app.mrb` detected | 10 even blinks (80 ms on, 80 ms off), then steady on while the app runs |
+| `SW3` held at boot (autostart skipped)   | 3 × (double flash 50 ms, 300 ms gap), then steady on                    |
+
+## Features
+
+### System Outline
+
+The main function of Board43 is to provide a visually rich RP2350 target for PicoRuby demonstrations while keeping the hardware story legible. The board includes local control inputs, a motion sensor, and an LED pipeline that can remain internal or extend outward through the buffered `LED OUT` line.
+
+**Functional Units**
+
+| No. | Unit                | Definition                                                                                                            |
+| --- | ------------------- | --------------------------------------------------------------------------------------------------------------------- |
+| 1   | MCU / clock / flash | RP2350A, crystal, and 4MB external QSPI flash define the core compute path.                                           |
+| 2   | USB / protection    | USB-C enters through ESD protection and reaches the MCU USB interface while also feeding the board power path.        |
+| 3   | Power management    | A 5V load switch and a 3.3V regulator create the board rails used by the digital system.                              |
+| 4   | Motion sensing      | The IMU is wired in I2C mode on `GP16/GP17`. See Accelerometer / Gyroscope / Temperature.                             |
+| 5   | User control        | Four user buttons plus `BOOT` and `RUN` create the immediate local input surface. See User Buttons and Board Buttons. |
+| 6   | Display engine      | A 16×16 WS2812 matrix is driven from `GPIO24` through a 5V level shifter. See LED Matrix.                             |
+| 7   | Expansion edge      | `J2` exposes power, buffered LED data, and `GP18..GP23`. See Expansion Header.                                        |
+| 8   | Debug interface     | `J1` exposes `SWCLK`, `SWDIO`, and `GND` on a 3-pin JST SH connector. See Debugging.                                  |
+
+### Important Wiring Facts
+
+- The IMU interrupt pins are not routed.
+- The public LED signal is not raw MCU logic. It is the buffered 5V output after the level shifter.
+- `GP25` is already assigned to the board status LED.
+
+## PicoRuby Setup
+
+### Firmware Download
+
+Download the latest Board43 firmware (UF2) from:
+
+- https://github.com/smartbank-inc/Board43/releases/latest
+
+### Firmware Installation
+
+1. Connect Board43 to the host PC with a USB-C cable.
+2. Enter USB boot mode: hold `BOOT`, press `RUN`, then release `BOOT` (see Reset Sequences). The board will appear as a USB mass-storage device.
+3. Copy the UF2 file to the device.
+4. The board reboots automatically. Connect to the serial console and launch `irb`.
+
+### Serial Connection
+
+After the board reboots, it appears as a USB CDC serial device. List candidates:
+
+```sh
+$ ls /dev/tty.*
+```
+
+Pick the matching entry (for example `/dev/tty.usbmodem101`) and open it with `picocom` (install with `brew install picocom` if missing):
+
+```sh
+$ picocom -b 115200 --imap lfcrlf /dev/tty.usbmodem101
+```
+
+On Linux the device path is typically `/dev/ttyACM*` instead.
+
+### Bring-Up Commands
+
+Once the session is open, R2P2 shows its shell prompt. Type `irb` to enter the interactive Ruby shell, where you can paste and run any of the validation snippets from Initial Validation Operations.
+
+```sh
+$> ls
+$> irb
+irb> puts "Hello PicoRuby!"
+Hello PicoRuby!
+=> nil
+irb>
+```
+
+Use the first session to confirm that the board is alive before committing to application code in `/home/app.rb` or `/home/app.mrb`.
+
+### Disabling Auto-Start
+
+If `/home/app.rb` or `/home/app.mrb` exists, PicoRuby runs it automatically on boot. To cancel the auto-start, hold `SW3`, press `RUN`, and keep `SW3` held until the status LED double-flashes 3 times (see Reset Sequences for the full list of reset sequences, and Status LED Patterns for the LED pattern). The board will then boot into the shell instead of the app.
+
+## GPIO Pin Map
+
+Each GPIO consumed by onboard hardware is exposed as a `Board43::GPIO_*` constant. The validation examples in the next section rely on these constants, so prefer them over raw pin numbers in your own code.
+
+**Onboard GPIO Assignments**
+
+| Pin    | Current use                            | Part      | Constant                   |
+| ------ | -------------------------------------- | --------- | -------------------------- |
+| `GP11` | Buzzer driver through transistor stage | `Q1, BZ1` | `Board43::GPIO_BUZZER`     |
+| `GP12` | User button                            | `SW5`     | `Board43::GPIO_SW5`        |
+| `GP13` | User button                            | `SW6`     | `Board43::GPIO_SW6`        |
+| `GP14` | User button                            | `SW4`     | `Board43::GPIO_SW4`        |
+| `GP15` | User button                            | `SW3`     | `Board43::GPIO_SW3`        |
+| `GP16` | IMU `SDA`, with pull-up                | `U6`      | `Board43::GPIO_IMU_SDA`    |
+| `GP17` | IMU `SCL`, with pull-up                | `U6`      | `Board43::GPIO_IMU_SCL`    |
+| `GP24` | Internal LED data source               | `U4`      | `Board43::GPIO_LEDOUT`     |
+| `GP25` | Status LED                             | `D2`      | `Board43::GPIO_STATUS_LED` |
+
+> **NOTICE** — The `Board43::` constants are Ruby module constants defined in the Board43 custom firmware. They are available globally without `require`, but are not part of stock PicoRuby and only exist when running the Board43 UF2.
+
+> **TIP** — `GP18..GP23` are free GPIOs routed to the public expansion edge rather than an onboard peripheral. See Expansion Header.
+
+## Initial Validation Operations
+
+### Status LED
+
+```ruby
+# GP25, on by default
+led = GPIO.new(Board43::GPIO_STATUS_LED, GPIO::OUT)
+
+loop do
+  # 0 = off, 1 = on
+  led.write 0
+  sleep 0.5
+  led.write 1
+  sleep 0.5
+end
+```
+
+The on-board status LED blinks on and off every 0.5 seconds.
+
+### User Buttons
+
+```ruby
+# active-low; SW3=GP15, SW4=GP14, SW5=GP12, SW6=GP13
+mode = GPIO::IN | GPIO::PULL_UP
+sw3 = GPIO.new(Board43::GPIO_SW3, mode)
+sw4 = GPIO.new(Board43::GPIO_SW4, mode)
+sw5 = GPIO.new(Board43::GPIO_SW5, mode)
+sw6 = GPIO.new(Board43::GPIO_SW6, mode)
+
+loop do
+  # 0 when pressed, 1 when released
+  puts "SW3=#{sw3.read} " \
+       "SW4=#{sw4.read} " \
+       "SW5=#{sw5.read} " \
+       "SW6=#{sw6.read}"
+  sleep 0.1
+end
+```
+
+The terminal prints a line of four SW values every 0.1 s. Pressing a button flips its value from `1` to `0` while held.
+
+### Buzzer
+
+```ruby
+require 'pwm'
+# GP11
+buzzer = PWM.new Board43::GPIO_BUZZER
+# A4 note (440 Hz), starts sound
+buzzer.frequency 440
+sleep 0.5
+# stops sound
+buzzer.duty 0
+```
+
+The buzzer emits a 440 Hz (A4) tone for 0.5 seconds, then falls silent.
+
+### LED Matrix
+
+```ruby
+require 'ws2812-plus'
+# GP24, 16x16 matrix
+led = WS2812.new(pin: Board43::GPIO_LEDOUT, num: 256)
+
+offset = 0
+loop do
+  256.times do |i|
+    # spread rainbow across all pixels
+    hue = (i * 360 / 256 + offset) % 360
+    # index, hue, saturation, brightness
+    led.set_hsb(i, hue, 100, 50)
+  end
+  # flush buffer to LEDs
+  led.show
+  # rotate the pattern
+  offset = (offset + 5) % 360
+end
+```
+
+The 16×16 RGB matrix displays a full-spectrum rainbow that rotates continuously across all pixels.
+
+### Accelerometer / Gyroscope / Temperature
+
+```ruby
+require 'i2c'
+require 'lsm6ds3'
+
+i2c = I2C.new(
+  unit: :RP2040_I2C0,
+  # GP16
+  sda_pin: Board43::GPIO_IMU_SDA,
+  # GP17
+  scl_pin: Board43::GPIO_IMU_SCL,
+  frequency: 400_000,
+)
+# 6-axis IMU
+imu = LSM6DS3.new(i2c)
+
+loop do
+  data = imu.read_all
+  # [ax, ay, az] in g
+  a = data[:acceleration]
+  # [gx, gy, gz] in dps
+  g = data[:gyroscope]
+  # degrees C
+  t = data[:temperature]
+  puts "acc: #{a[0]}, #{a[1]}, #{a[2]}  " \
+       "gyr: #{g[0]}, #{g[1]}, #{g[2]}  " \
+       "temp: #{t}"
+  sleep 0.1
+end
+```
+
+Move the board by hand while the loop runs. The terminal prints acceleration, gyroscope, and temperature readings every 0.1 s, and the values change as the board moves.
+
+## Firmware Build
+
+This section is for builders who want to compile their own firmware from source instead of using the released UF2. The build target is R2P2 on RP2350 (pico2 / prod) from the pinned PicoRuby submodule.
+
+> **NOTICE** — Prerequisites differ between macOS and Linux, but the build and flash flow is the same.
+
+> **NOTICE** — The firmware submodule is pinned. Updating PicoRuby to a newer commit may require re-applying or regenerating `picoruby.patch`.
+
+### Source Tree
+
+PicoRuby (version `3.4.2`, pinned commit `9b94521`) is vendored under `firmware/picoruby`. R2P2 lives inside that tree as the `picoruby-r2p2` mrbgem, and the Pico SDK and Pico Extras are pulled in as nested submodules beneath it.
+
+### Prerequisites and Setup
+
+**macOS Setup**
+
+```sh
+$ brew install cmake ruby gcc-arm-embedded
+$ git clone https://github.com/smartbank-inc/Board43.git
+$ cd Board43/firmware
+$ ./setup.sh
+```
+
+**Linux (Ubuntu) Setup**
+
+```sh
+$ sudo apt-get update
+$ sudo apt-get install -y ruby bundler cmake gcc-arm-none-eabi libnewlib-arm-none-eabi \
+                          libstdc++-arm-none-eabi-newlib
+$ git clone https://github.com/smartbank-inc/Board43.git
+$ cd Board43/firmware
+$ ./setup.sh
+```
+
+`./setup.sh` initializes submodules, installs dependencies, and applies `picoruby.patch` to PicoRuby. The patch makes the following changes:
+
+- Adds custom gems (`picoruby-ws2812-plus`, `picoruby-lsm6ds3`)
+- Turns on the status LED on `GP25` from C init
+- Blinks the status LED 10 times before loading an auto-started app
+- Lets `SW3` held at boot skip autostart (wifi, `app.mrb` / `app.rb`, DFU boot manager)
+- Wraps the boot load in a rescue block so script errors fall through to the shell
+- Tags the firmware filename with the build time and an `-SB` suffix
+
+### Build
+
+```sh
+$ cd Board43/firmware/picoruby
+$ export PICO_SDK_PATH="$(pwd)/mrbgems/picoruby-r2p2/lib/pico-sdk"
+$ export PICO_EXTRAS_PATH="$(pwd)/mrbgems/picoruby-r2p2/lib/pico-extras"
+$ rm -rf build/r2p2/picoruby/pico2
+$ rake r2p2:picoruby:pico2:prod
+```
+
+The build produces `R2P2-PICORUBY-*.uf2` under `build/r2p2/picoruby/pico2/prod/`. The explicit `rm -rf` is required because the rake clean task does not wipe the CMake cache.
+
+### Flash
+
+1. Connect USB to Board43.
+2. Enter USB boot mode: hold `BOOT`, press `RUN`, then release both (see Reset Sequences). The mounted drive should appear as `RP2350`.
+3. Copy the UF2 to the drive:
+
+```sh
+$ cp build/r2p2/picoruby/pico2/prod/R2P2-PICORUBY-*.uf2 /Volumes/RP2350/
+```
+
+4. When the copy finishes, press `RUN` to reset.
+
+## Debugging
+
+This section is for builders who want to flash and debug over SWD instead of the UF2 flow in Firmware Build. Using the SWD header requires an external debug probe; if you only plan to iterate on PicoRuby scripts, you can skip it.
+
+`J1` is a 3-pin JST SH connector (`BM03B-SRSS-TB`) carrying `SWCLK`, `SWDIO`, and `GND`. The JST SH debug cable that ships with the Raspberry Pi Debug Probe plugs into `J1` directly.
+
+For host setup, drivers, and OpenOCD usage, see the official documentation:
+
+- https://www.raspberrypi.com/documentation/microcontrollers/debug-probe.html
+
+## Expansion Header
+
+This section is for builders who want to extend the board through the public expansion edge. Using the header requires soldering; if you only plan to run code on the stock hardware, you can skip it.
+
+**J2 Pin Assignment**
+
+| Pin | Signal    |
+| --- | --------- |
+| 1   | `GND`     |
+| 2   | `+5V`     |
+| 3   | `+3V3`    |
+| 4   | `LED OUT` |
+| 5   | `GP23`    |
+| 6   | `GP22`    |
+| 7   | `GP21`    |
+| 8   | `GP20`    |
+| 9   | `GP19`    |
+| 10  | `GP18`    |
+
+> **NOTICE** — `J2` ships as bare through-hole pads. Solder a 1×10 2.54mm pin header (or wires) yourself before using the expansion edge.
+
+> **NOTICE** — `GP0..GP10` and `GP26..GP29` belong to the MCU but are not presented on the user header in the current PCB.
+
+## Bill of Materials
+
+### IC / Module
+
+**Active Components**
+
+| Ref  | Value             | Package  | LCSC      | Description                               |
+| ---- | ----------------- | -------- | --------- | ----------------------------------------- |
+| `U1` | LM73100RPWR       | Custom   | C3210761  | Ideal Diode / Reverse Polarity Protection |
+| `U2` | TLV62568DBVR      | SOT-23-5 | C163219   | Buck Converter                            |
+| `U3` | RP2350A           | Custom   | C42411118 | MCU                                       |
+| `U4` | SN74AHCT1G125DBVR | SOT-23-5 | C7484     | Single Bus Buffer Gate                    |
+| `U5` | W25Q32JVSS        | SOIC-8   | C82344    | 32Mbit SPI Flash                          |
+| `U6` | LSM6DS3TR         | LGA-14   | C95230    | 6-axis Accelerometer + Gyroscope          |
+| `U7` | TPD2EUSB30A       | DRT-3    | C94934    | USB ESD Protection                        |
+
+### Passive Components
+
+**Capacitors (283 pcs)**
+
+| Qty | Value | Pkg  | LCSC     |
+| --- | ----- | ---- | -------- |
+| 265 | 100nF | 0201 | C668346  |
+| 4   | 100nF | 0402 | C1525    |
+| 3   | 10uF  | 0603 | C2959727 |
+| 2   | 15pF  | 0402 | C76950   |
+| 1   | 1uF   | 0402 | C528974  |
+| 5   | 4.7uF | 0402 | C368809  |
+| 1   | 470pF | 0201 | C384950  |
+| 2   | 47uF  | 1206 | C96123   |
+
+**Inductors**
+
+| Ref  | Value | Pkg    | LCSC      |
+| ---- | ----- | ------ | --------- |
+| `L1` | 2.2uH | 1008   | C1017131  |
+| `L2` | 3.3uH | Custom | C42411119 |
+
+**Crystal**
+
+| Ref  | Value       | Pkg  | LCSC      |
+| ---- | ----------- | ---- | --------- |
+| `Y1` | ABM8-272-T3 | 3225 | C20625731 |
+
+**Resistors (19 pcs)**
+
+| Ref             | Value | Pkg  | LCSC     |
+| --------------- | ----- | ---- | -------- |
+| `R1, R2`        | 5.1k  | 0201 | C270344  |
+| `R3`            | 340k  | 0402 | C423187  |
+| `R4`            | 32.4k | 0402 | C26974   |
+| `R5, R7`        | 100k  | 0402 | C25741   |
+| `R6`            | 450k  | 0402 | C5159688 |
+| `R8`            | 33    | 0402 | C25105   |
+| `R9, R10`       | 27    | 0201 | C473051  |
+| `R11, R13, R14` | 1k    | 0201 | C270365  |
+| `R12`           | 5.6k  | 0201 | C423481  |
+| `R15, R16`      | 10k   | 0201 | C270334  |
+| `R17`           | 2.2k  | 0402 | C25879   |
+| `R18`           | 22k   | 0402 | C25768   |
+| `R19`           | 470   | 0201 | C473464  |
+
+### Electromechanical and Connectors
+
+**LEDs (257 pcs)**
+
+| Ref         | Value           | Pkg      | LCSC     |
+| ----------- | --------------- | -------- | -------- |
+| `D2`        | Status LED      | KT-0603W | C2290    |
+| `LED1..256` | WS2812C-2020-V1 | Custom   | C2976072 |
+
+**Diodes**
+
+| Ref  | Value         | Pkg      | LCSC    |
+| ---- | ------------- | -------- | ------- |
+| `D1` | SMF5.0A (TVS) | SOD-123F | C193402 |
+| `D3` | US1MW         | SOD-123F | C116132 |
+
+**Switches (6 pcs)**
+
+| Ref        | Value      | Pkg    | LCSC    |
+| ---------- | ---------- | ------ | ------- |
+| `SW1..SW6` | SKRPACE010 | Custom | C139797 |
+
+**Other**
+
+| Ref   | Value       | Pkg    | LCSC    |
+| ----- | ----------- | ------ | ------- |
+| `Q1`  | S9013 (NPN) | SOT-23 | C727139 |
+| `BZ1` | MLT-8530    | Custom | C94599  |
+
+**Connectors**
+
+| Ref    | Value                  | Package      | LCSC    |
+| ------ | ---------------------- | ------------ | ------- |
+| `USB1` | TYPE-C 16PIN           | Custom       | C393939 |
+| `J1`   | BM03B-SRSS-TB          | Custom       | C160389 |
+| `J2`   | Pin Header 1×10 2.54mm | Through-hole | —       |
+
+> **NOTICE** — All parts have LCSC part numbers except `J2` (standard pin header).
+
+---
+
+© SmartBank, Inc.

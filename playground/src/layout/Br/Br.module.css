@@ -1,0 +1,51 @@
+.br {
+  box-sizing: border-box;
+
+  &.-is-hide-medium {
+    display: block;
+
+    @media screen and (width >= 768px) {
+      display: none;
+    }
+  }
+
+  &.-is-show-medium {
+    display: none;
+
+    @media screen and (width >= 768px) {
+      display: block;
+    }
+  }
+
+  &.-is-hide-expanded {
+    display: block;
+
+    @media screen and (width >= 1024px) {
+      display: none;
+    }
+  }
+
+  &.-is-show-expanded {
+    display: none;
+
+    @media screen and (width >= 1024px) {
+      display: block;
+    }
+  }
+
+  &.-is-hide-huge {
+    display: block;
+
+    @media screen and (width >= 1400px) {
+      display: none;
+    }
+  }
+
+  &.-is-show-huge {
+    display: none;
+
+    @media screen and (width >= 1400px) {
+      display: block;
+    }
+  }
+}

@@ -1,0 +1,166 @@
+diff --git a/build_config/r2p2-picoruby-pico2.rb b/build_config/r2p2-picoruby-pico2.rb
+index 58f28148..63806301 100644
+--- a/build_config/r2p2-picoruby-pico2.rb
++++ b/build_config/r2p2-picoruby-pico2.rb
+@@ -56,6 +56,8 @@ MRuby::CrossBuild.new("r2p2-picoruby-pico2") do |conf|
+   conf.gem core: 'picoruby-psg'
+   conf.gem core: 'picoruby-shinonome'
+   conf.gem core: 'picoruby-keyboard'
++  conf.gem github: 'ksbmyk/picoruby-ws2812-plus', branch: 'main'
++  conf.gem github: '0x6b/picoruby-lsm6ds3', branch: 'main'
+   conf.mrubyc_hal_arm
+   conf.picoruby(alloc_libc: false)
+ end
+diff --git a/lib/picoruby/build.rb b/lib/picoruby/build.rb
+index 4f517ff3..6ea4192f 100644
+--- a/lib/picoruby/build.rb
++++ b/lib/picoruby/build.rb
+@@ -65,7 +65,7 @@ module MRuby
+       timestamp = Time.at(`git log -1 --format=%ct`.to_i).utc.strftime('%Y-%m-%dT%H:%M:%SZ')
+       branch = `git branch --show-current`.strip
+       commit_hash = `git log -1 --format=%h`.strip
+-      build_date = Time.now.utc.strftime("%Y-%m-%d")
++      build_date = Time.now.utc.strftime("%Y-%m-%d %H:%M:%S SB")
+ 
+       File.write(
+         "#{MRUBY_ROOT}/src/version.c",
+@@ -99,7 +99,7 @@ module MRuby
+       timestamp = Time.at(`git log -1 --format=%ct`.to_i).utc.strftime('%Y-%m-%dT%H:%M:%SZ')
+       branch = `git branch --show-current`.strip
+       commit_hash = `git log -1 --format=%h`.strip
+-      build_date = Time.now.utc.strftime("%Y-%m-%d")
++      build_date = Time.now.utc.strftime("%Y-%m-%d %H:%M:%S SB")
+ 
+       File.write(
+         "#{MRUBY_ROOT}/src/version.c",
+diff --git a/mrbgems/picoruby-r2p2/cmake/CMakeLists.txt b/mrbgems/picoruby-r2p2/cmake/CMakeLists.txt
+index c1231939..02647934 100644
+--- a/mrbgems/picoruby-r2p2/cmake/CMakeLists.txt
++++ b/mrbgems/picoruby-r2p2/cmake/CMakeLists.txt
+@@ -8,13 +8,13 @@ include(pico_extras_import.cmake)
+ # Initialize the SDK
+ pico_sdk_init()
+ 
+-execute_process (COMMAND date +%Y%m%d OUTPUT_VARIABLE CMAKE_BUILDDATE OUTPUT_STRIP_TRAILING_WHITESPACE)
++execute_process (COMMAND date +%Y%m%d-%H%M%S OUTPUT_VARIABLE CMAKE_BUILDDATE OUTPUT_STRIP_TRAILING_WHITESPACE)
+ execute_process (COMMAND git rev-parse --short HEAD OUTPUT_VARIABLE CMAKE_REVISION OUTPUT_STRIP_TRAILING_WHITESPACE WORKING_DIRECTORY ${PICORUBY_ROOT})
+ # R2P2_VERSION is passed via -D from rake task
+ set (R2P2_BUILDDATE ${CMAKE_BUILDDATE})
+ set (R2P2_REVISION  ${CMAKE_REVISION})
+ 
+-project("${R2P2_NAME}-${R2P2_VERSION}-${R2P2_BOARD_NAME}-${R2P2_BUILDDATE}-${R2P2_REVISION}")
++project("${R2P2_NAME}-${R2P2_VERSION}-${R2P2_BOARD_NAME}-${R2P2_BUILDDATE}-${R2P2_REVISION}-SB")
+ 
+ add_compile_options(-Wall
+   # int != int32_t as far as the compiler is concerned because gcc has int32_t as long int
+diff --git a/mrbgems/picoruby-r2p2/mrblib/main_task.rb b/mrbgems/picoruby-r2p2/mrblib/main_task.rb
+index 1239edb7..af42ef89 100644
+--- a/mrbgems/picoruby-r2p2/mrblib/main_task.rb
++++ b/mrbgems/picoruby-r2p2/mrblib/main_task.rb
+@@ -1,3 +1,15 @@
++module Board43
++  GPIO_BUZZER     = 11
++  GPIO_SW3        = 15
++  GPIO_SW4        = 14
++  GPIO_SW5        = 12
++  GPIO_SW6        = 13
++  GPIO_IMU_SDA    = 16
++  GPIO_IMU_SCL    = 17
++  GPIO_LEDOUT     = 24
++  GPIO_STATUS_LED = 25
++end
++
+ if RUBY_ENGINE == "mruby/c"
+   require "numeric-ext"
+ end
+diff --git a/mrbgems/picoruby-r2p2/ports/rp2040/main.c b/mrbgems/picoruby-r2p2/ports/rp2040/main.c
+index 06b39985..468bac2e 100644
+--- a/mrbgems/picoruby-r2p2/ports/rp2040/main.c
++++ b/mrbgems/picoruby-r2p2/ports/rp2040/main.c
+@@ -101,10 +101,16 @@ gpio_init_safe(void)
+   // --- LED (16) ---
+   gpio_set_in_pull_down(16);
+ 
+-  // --- SWITCH, ENCODER, ADC (17-29) ---
++  // --- SWITCH, ENCODER, ADC (17-29, except 25) ---
+   for (int pin = 17; pin <= 29; pin++) {
++    if (pin == 25) continue; // reserved for status LED
+     gpio_set_in_pull_down(pin);
+   }
++
++  // Status LED (GPIO25, active-high): on while powered
++  gpio_init(25);
++  gpio_set_dir(25, GPIO_OUT);
++  gpio_put(25, 1);
+ }
+ 
+ int
+diff --git a/mrbgems/picoruby-shell/shell_executables/r2p2.rb b/mrbgems/picoruby-shell/shell_executables/r2p2.rb
+index 56ec9c7b..1f8705b4 100644
+--- a/mrbgems/picoruby-shell/shell_executables/r2p2.rb
++++ b/mrbgems/picoruby-shell/shell_executables/r2p2.rb
+@@ -1,24 +1,45 @@
+-if Machine.wifi_available?
+-  if Shell.get_device(:gpio, 'TRIGGER_NMBLE')&.low?
+-    load "/bin/nmble"
++if GPIO.new(Board43::GPIO_SW3, GPIO::IN|GPIO::PULL_UP).low?
++  puts "SW3 held: skipping autostart"
++  led = GPIO.new(Board43::GPIO_STATUS_LED, GPIO::OUT)
++  3.times do
++    2.times { led.write(0); sleep_ms 50; led.write(1); sleep_ms 50 }
++    sleep_ms 300
+   end
+-  ARGV[0] = "--check-auto-connect"
+-  load "/bin/wifi_connect"
+-  ARGV.clear
+-end
+-
+-if File.exist?("#{ENV['HOME']}/app.mrb")
+-  puts "Loading app.mrb"
+-  load "#{ENV['HOME']}/app.mrb"
+-elsif File.exist?("#{ENV['HOME']}/app.rb")
+-  puts "Loading app.rb"
+-  load "#{ENV['HOME']}/app.rb"
++  led.write(1)
+ else
+-  require 'dfu'
+-  app = DFU::BootManager.resolve
+-  if app
+-    puts "Loading #{app}"
+-    load app
++  if Machine.wifi_available?
++    if Shell.get_device(:gpio, 'TRIGGER_NMBLE')&.low?
++      load "/bin/nmble"
++    end
++    ARGV[0] = "--check-auto-connect"
++    load "/bin/wifi_connect"
++    ARGV.clear
++  end
++
++  boot_app = if File.exist?("#{ENV['HOME']}/app.mrb")
++    "#{ENV['HOME']}/app.mrb"
++  elsif File.exist?("#{ENV['HOME']}/app.rb")
++    "#{ENV['HOME']}/app.rb"
++  else
++    require 'dfu'
++    DFU::BootManager.resolve
++  end
++
++  if boot_app
++    led = GPIO.new(Board43::GPIO_STATUS_LED, GPIO::OUT)
++    10.times do
++      led.write(0); sleep_ms 80
++      led.write(1); sleep_ms 80
++    end
++    puts "Loading #{boot_app}"
++    begin
++      load boot_app
++    rescue Interrupt
++      puts "Boot app interrupted"
++    rescue ScriptError, StandardError => e
++      puts "#{e.message} (#{e.class})"
++      puts "Boot app failed. Continuing to shell..."
++    end
+   else
+     puts "No app found"
+   end

@@ -1,0 +1,34 @@
+# LED indices grouped into concentric square rings (outermost first)
+{{RINGS}}
+
+frame = 0
+loop do
+  # Check the tilt sensor: if flipped, we'll rotate 180°
+  acc = imu.read_all[:acceleration]
+  flip = acc[0] < -0.5 if acc[0].abs > 0.5
+
+  # Spin each ring; inner rings take smaller steps so they stay in sync
+  {{NUM_RINGS}}.times do |i|
+    ring = rings[i]
+    len = ring_lens[i]
+    off = frame * len / {{OUTER_PERIMETER}}
+    len.times do |j|
+      src = ring[(j + off) % len]
+      c = pattern[src / {{WIDTH}}][src % {{WIDTH}}]
+      dst = ring[j]
+      dst = ({{H_MINUS_1}} - dst / {{WIDTH}}) * {{WIDTH}} + ({{W_MINUS_1}} - dst % {{WIDTH}}) if flip
+      led.set_rgb(dst, c[0], c[1], c[2])
+    end
+  end
+  led.show
+
+  # Linger on the starting position so participants can see the original picture
+  if frame == 0
+    sleep_ms 3000
+  else
+    sleep_ms(delay_ms / 3)
+  end
+
+  frame += 1
+  frame = 0 if frame >= {{OUTER_PERIMETER}}
+end

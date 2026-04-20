@@ -1,0 +1,159 @@
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  width: auto;
+  min-height: var(--dimension-scale-48);
+  padding: var(--dimension-spacing-small) var(--dimension-spacing-medium);
+  color: var(--color-text-inverse-high);
+  font-weight: var(--font-weight-bold);
+  font-size: var(--font-size-medium);
+  font-family: var(--font-ui);
+  line-height: var(--line-height-dense-medium);
+  text-decoration: none;
+  background-color: transparent;
+  border: none;
+  border-radius: var(--dimension-radius-medium);
+  cursor: pointer;
+
+  &:disabled {
+    opacity: var(--opacity-state-disabled);
+    pointer-events: none;
+  }
+
+  &.-appearance-filled {
+    color: var(--color-text-inverse-high);
+    background-image: linear-gradient(
+      var(--color-button-filled),
+      var(--color-button-filled)
+    );
+
+    &:hover {
+      background-image: linear-gradient(
+          var(--color-state-inverse-hover),
+          var(--color-state-inverse-hover)
+        ),
+        linear-gradient(var(--color-button-filled), var(--color-button-filled));
+    }
+
+    &:active,
+    &:focus {
+      background-image: linear-gradient(
+          var(--color-state-inverse-focused),
+          var(--color-state-inverse-focused)
+        ),
+        linear-gradient(var(--color-button-filled), var(--color-button-filled));
+    }
+  }
+
+  &.-appearance-outlined {
+    color: var(--color-text-default-high);
+    background-image: linear-gradient(
+      var(--color-background-default-base),
+      var(--color-background-default-base)
+    );
+    border: var(--dimension-border-medium) solid var(--color-border-default-low);
+
+    &:hover {
+      background-image: linear-gradient(
+          var(--color-state-default-hover),
+          var(--color-state-default-hover)
+        ),
+        linear-gradient(
+          var(--color-background-default-base),
+          var(--color-background-default-base)
+        );
+    }
+
+    &:active,
+    &:focus {
+      background-image: linear-gradient(
+          var(--color-state-default-focused),
+          var(--color-state-default-focused)
+        ),
+        linear-gradient(
+          var(--color-background-default-base),
+          var(--color-background-default-base)
+        );
+    }
+  }
+
+  &.-appearance-tonal {
+    color: var(--color-text-default-high);
+    background-image: linear-gradient(
+      var(--color-button-tonal),
+      var(--color-button-tonal)
+    );
+
+    &:hover {
+      background-image: linear-gradient(
+          var(--color-state-default-hover),
+          var(--color-state-default-hover)
+        ), linear-gradient(var(--color-button-tonal), var(--color-button-tonal));
+    }
+
+    &:active,
+    &:focus {
+      background-image: linear-gradient(
+          var(--color-state-default-focused),
+          var(--color-state-default-focused)
+        ), linear-gradient(var(--color-button-tonal), var(--color-button-tonal));
+    }
+  }
+
+  &.-appearance-destructive {
+    color: var(--color-text-inverse-high);
+    background-image: linear-gradient(
+      var(--color-impression-negative-base),
+      var(--color-impression-negative-base)
+    );
+
+    &:hover {
+      background-image: linear-gradient(
+          var(--color-state-inverse-hover),
+          var(--color-state-inverse-hover)
+        ),
+        linear-gradient(
+          var(--color-impression-negative-base),
+          var(--color-impression-negative-base)
+        );
+    }
+
+    &:active,
+    &:focus {
+      background-image: linear-gradient(
+          var(--color-state-inverse-focused),
+          var(--color-state-inverse-focused)
+        ),
+        linear-gradient(
+          var(--color-impression-negative-base),
+          var(--color-impression-negative-base)
+        );
+    }
+  }
+
+  &.-size-small {
+    min-height: auto;
+    padding: var(--dimension-spacing-extra-small) var(--dimension-spacing-small);
+    font-size: var(--font-size-extra-small);
+    line-height: var(--line-height-dense-extra-small);
+  }
+
+  &.-size-medium {
+    min-height: var(--dimension-scale-48);
+    padding: var(--dimension-spacing-small) var(--dimension-spacing-medium);
+    font-size: var(--font-size-medium);
+    line-height: var(--line-height-dense-medium);
+  }
+
+  &.-width-hug {
+    display: inline-flex;
+    width: auto;
+  }
+
+  &.-width-full {
+    display: flex;
+    width: 100%;
+  }
+}

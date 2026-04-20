@@ -1,0 +1,34 @@
+# LED インデックスを同心の四角いリングごとにグループ化（外側から）
+{{RINGS}}
+
+frame = 0
+loop do
+  # 傾きセンサーをチェック：反転していたら 180° 回転
+  acc = imu.read_all[:acceleration]
+  flip = acc[0] < -0.5 if acc[0].abs > 0.5
+
+  # 各リングを回転。内側のリングは歩幅を小さくして同期を維持
+  {{NUM_RINGS}}.times do |i|
+    ring = rings[i]
+    len = ring_lens[i]
+    off = frame * len / {{OUTER_PERIMETER}}
+    len.times do |j|
+      src = ring[(j + off) % len]
+      c = pattern[src / {{WIDTH}}][src % {{WIDTH}}]
+      dst = ring[j]
+      dst = ({{H_MINUS_1}} - dst / {{WIDTH}}) * {{WIDTH}} + ({{W_MINUS_1}} - dst % {{WIDTH}}) if flip
+      led.set_rgb(dst, c[0], c[1], c[2])
+    end
+  end
+  led.show
+
+  # 元の絵を観客が確認できるよう、開始位置で長めに静止
+  if frame == 0
+    sleep_ms 3000
+  else
+    sleep_ms(delay_ms / 3)
+  end
+
+  frame += 1
+  frame = 0 if frame >= {{OUTER_PERIMETER}}
+end

@@ -1,0 +1,39 @@
+.snackbar {
+  position: fixed;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  box-sizing: border-box;
+  visibility: hidden;
+  opacity: 0;
+  transition: all var(--duration-scale-200) var(--cubic-bezier-motion-enter);
+  z-index: 3000;
+
+  &.--activated {
+    visibility: visible;
+    opacity: 1;
+  }
+
+  ._container {
+    background-color: var(--color-impression-positive-base-variant);
+    border-radius: var(--dimension-radius-medium);
+
+    &.-color-positive {
+      background-color: var(--color-impression-positive-base-variant);
+    }
+
+    &.-color-attention {
+      background-color: var(--color-impression-attention-base-variant);
+    }
+  }
+
+  ._leading {
+    svg {
+      display: block;
+    }
+
+    path {
+      fill: var(--color-text-inverse-high);
+    }
+  }
+}

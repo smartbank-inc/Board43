@@ -1,0 +1,40 @@
+.popup {
+  position: fixed;
+  inset: 0;
+  margin: auto;
+  z-index: 2000;
+  box-sizing: border-box;
+  width: min(calc(var(--dimension-scale-312) * 2), 90vw);
+  max-height: calc(100vh - var(--dimension-spacing-extra-large));
+  padding: 0;
+  background-color: var(--color-background-default-accent);
+  border: none;
+  border-radius: var(--dimension-radius-medium);
+  transition: all var(--duration-scale-200) var(--cubic-bezier-motion-enter);
+  overflow-y: auto;
+
+  &::backdrop {
+    background-color: var(--color-scrim);
+  }
+
+  ._button {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: var(--dimension-scale-48);
+    height: var(--dimension-scale-48);
+    margin: 0;
+    padding: 0;
+    background: none;
+    border: none;
+    cursor: pointer;
+    appearance: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  ._content {
+    padding-top: var(--dimension-scale-48);
+  }
+}

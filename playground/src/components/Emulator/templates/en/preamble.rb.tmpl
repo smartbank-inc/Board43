@@ -1,0 +1,24 @@
+# Libraries we need
+require 'ws2812-plus'
+require 'i2c'
+require 'lsm6ds3'
+
+# Set up the LED matrix
+led = WS2812.new(pin: Board43::GPIO_LEDOUT, num: {{LED_COUNT}})
+led.clear
+
+# How long to pause between frames (in milliseconds)
+delay_ms = {{SPEED_MS}}
+
+# Set up the tilt sensor so we can detect upside-down
+i2c = I2C.new(
+  unit: :RP2040_I2C0,
+  sda_pin: Board43::GPIO_IMU_SDA,
+  scl_pin: Board43::GPIO_IMU_SCL,
+  frequency: 400_000,
+)
+imu = LSM6DS3.new(i2c)
+flip = false
+
+# The picture to show, as a grid of [red, green, blue] colors
+{{PATTERN}}

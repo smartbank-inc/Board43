@@ -1,0 +1,74 @@
+name: Build firmware
+
+on:
+  push:
+    tags:
+      # firmware-YYYY-MM-DD-NN (e.g. firmware-2026-04-15-01)
+      - "firmware-[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]-[0-9]*"
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write  # create release, upload assets
+    steps:
+      # Only init top-level submodules (firmware/picoruby). Nested submodules
+      # (pico-sdk, pico-extras) must be checked out by `rake r2p2:setup` so
+      # they land on the tagged release the rake check expects (e.g. sdk-2.2.0).
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
+        with:
+          persist-credentials: false
+          submodules: true
+
+      - name: Install APT packages
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            cmake \
+            gcc-arm-none-eabi \
+            libnewlib-arm-none-eabi \
+            libstdc++-arm-none-eabi-newlib
+
+      # Not strictly required (ubuntu-latest ships Ruby, and setup.sh runs
+      # `bundle install` itself), but pins the Ruby version so runner image
+      # updates don't break the build, and enables bundler-cache to skip
+      # re-downloading gems on every run.
+      - uses: ruby/setup-ruby@4c56a21280b36d862b5fc31348f463d60bdc55d5 # v1.301.0
+        with:
+          ruby-version: "3.3"
+          bundler-cache: true
+          working-directory: firmware/picoruby
+
+      - name: Run setup.sh
+        working-directory: firmware
+        run: ./setup.sh
+
+      - name: Build R2P2 for pico2 (prod)
+        working-directory: firmware/picoruby
+        run: |
+          export PICO_SDK_PATH="$(pwd)/mrbgems/picoruby-r2p2/lib/pico-sdk"
+          export PICO_EXTRAS_PATH="$(pwd)/mrbgems/picoruby-r2p2/lib/pico-extras"
+          rm -rf build/r2p2/picoruby/pico2
+          rake r2p2:picoruby:pico2:prod
+
+      - name: Resolve UF2 filename
+        id: uf2
+        working-directory: firmware/picoruby/build/r2p2/picoruby/pico2/prod
+        run: |
+          set -eu
+          shopt -s nullglob
+          files=(R2P2-PICORUBY-*.uf2)
+          if [ ${#files[@]} -ne 1 ]; then
+            echo "Expected exactly one UF2, found: ${files[*]}" >&2
+            exit 1
+          fi
+          echo "name=${files[0]%.uf2}" >> "$GITHUB_OUTPUT"
+
+      - name: Create GitHub Release
+        if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/')
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TAG: ${{ github.ref_name }}
+          UF2_PATH: firmware/picoruby/build/r2p2/picoruby/pico2/prod/${{ steps.uf2.outputs.name }}.uf2
+        run: gh release create "$TAG" "$UF2_PATH" --title "$TAG" --generate-notes

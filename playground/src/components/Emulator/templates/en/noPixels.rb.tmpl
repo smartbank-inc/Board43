@@ -1,0 +1,8 @@
+# Set up the LED matrix
+require 'ws2812-plus'
+led = WS2812.new(pin: Board43::GPIO_LEDOUT, num: {{LED_COUNT}})
+
+# Keep every LED turned off
+loop do
+  led.clear
+end

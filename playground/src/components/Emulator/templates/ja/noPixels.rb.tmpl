@@ -1,0 +1,8 @@
+# LED マトリクスをセットアップ
+require 'ws2812-plus'
+led = WS2812.new(pin: Board43::GPIO_LEDOUT, num: {{LED_COUNT}})
+
+# 全 LED を消灯したまま
+loop do
+  led.clear
+end

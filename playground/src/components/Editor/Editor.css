@@ -1,0 +1,147 @@
+.editor-pane {
+  height: 100%;
+  background: var(--color-background-default-base);
+}
+
+.editor-toolbar {
+  background: var(--color-background-default-accent);
+  border-bottom: 1px solid var(--color-border-default-low);
+  height: var(--dimension-scale-40);
+  flex-shrink: 0;
+}
+
+.file-tabs {
+  overflow-x: auto;
+  width: auto;
+}
+
+.file-tab {
+  width: auto;
+  padding: 0;
+  background: transparent;
+  color: var(--color-text-default-mid);
+  font-size: var(--font-size-extra-small);
+  border-bottom: 2px solid transparent;
+  transition: color var(--duration-scale-200) var(--cubic-bezier-motion-enter);
+}
+
+.file-tab.active {
+  color: var(--color-text-default-high);
+  font-weight: var(--font-weight-bold);
+  border-bottom-color: var(--color-interactive-base);
+}
+
+.file-tab-name {
+  background: none;
+  border: none;
+  color: inherit;
+  padding: var(--dimension-spacing-extra-small)
+    var(--dimension-spacing-extra-small) var(--dimension-spacing-extra-small)
+    var(--dimension-spacing-small);
+  cursor: pointer;
+}
+
+.file-tab-close {
+  background: none;
+  border: none;
+  color: var(--color-text-default-mid);
+  padding: var(--dimension-spacing-extra-small)
+    var(--dimension-spacing-extra-small) var(--dimension-spacing-extra-small)
+    var(--dimension-spacing-two-extra-small);
+  cursor: pointer;
+  font-size: var(--font-size-small);
+  transition: color var(--duration-scale-200) var(--cubic-bezier-motion-enter);
+}
+
+.file-tab-close:hover {
+  color: var(--color-text-default-high);
+}
+
+.editor-toolbar-actions {
+  position: relative;
+  flex-shrink: 0;
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: var(--dimension-spacing-two-extra-small);
+}
+
+.new-file-button-wrapper,
+.open-file-button-wrapper {
+  position: relative;
+}
+
+.new-file-scrim {
+  position: fixed;
+  inset: 0;
+  background-color: var(--color-scrim);
+  z-index: 99;
+}
+
+.add-menu-dropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  min-width: 280px;
+  background: var(--color-background-default-base);
+  border: 1px solid var(--color-border-default-low);
+  border-radius: var(--dimension-radius-medium);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+  z-index: 100;
+  overflow: hidden;
+}
+
+.editor-new-file input {
+  flex: 1;
+  background: var(--color-background-default-base);
+  border: 1px solid var(--color-border-default-low);
+  color: var(--color-text-default-high);
+  padding: var(--dimension-spacing-two-extra-small)
+    var(--dimension-spacing-extra-small);
+  font-size: var(--font-size-extra-small);
+  border-radius: var(--dimension-radius-medium);
+  transition: border-color var(--duration-scale-200)
+    var(--cubic-bezier-motion-enter);
+}
+
+.editor-new-file input:focus {
+  outline: none;
+  border-color: var(--color-interactive-base);
+}
+
+.editor-content {
+  flex: 1;
+  display: flex;
+  flex-direction: row;
+  gap: var(--dimension-spacing-extra-small);
+  overflow: hidden;
+  min-height: 0;
+}
+
+.editor-code-column {
+  flex: 1;
+  min-width: 0;
+  min-height: 0;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.editor-simulator-column {
+  flex: 1;
+  min-width: 0;
+  min-height: 0;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.editor-code {
+  height: 100%;
+}
+
+.editor-empty {
+  height: 100%;
+  color: var(--color-text-default-mid);
+  font-size: var(--font-size-small);
+}

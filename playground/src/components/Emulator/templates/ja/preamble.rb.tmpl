@@ -1,0 +1,24 @@
+# 必要なライブラリを読み込み
+require 'ws2812-plus'
+require 'i2c'
+require 'lsm6ds3'
+
+# LED マトリクスをセットアップ
+led = WS2812.new(pin: Board43::GPIO_LEDOUT, num: {{LED_COUNT}})
+led.clear
+
+# フレーム間の待ち時間（ミリ秒）
+delay_ms = {{SPEED_MS}}
+
+# 上下反転を検知するための傾きセンサーをセットアップ
+i2c = I2C.new(
+  unit: :RP2040_I2C0,
+  sda_pin: Board43::GPIO_IMU_SDA,
+  scl_pin: Board43::GPIO_IMU_SCL,
+  frequency: 400_000,
+)
+imu = LSM6DS3.new(i2c)
+flip = false
+
+# 表示する絵を [赤, 緑, 青] のグリッドで定義
+{{PATTERN}}

@@ -1,0 +1,206 @@
+.banner {
+  box-sizing: border-box;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  text-align: start;
+  background: none;
+  border: var(--dimension-border-medium) solid var(--color-border-default-low);
+  border-radius: var(--dimension-radius-medium);
+  cursor: pointer;
+  appearance: none;
+
+  &.-color-base {
+    background-image: linear-gradient(
+      var(--color-background-default-base),
+      var(--color-background-default-base)
+    );
+
+    &:hover {
+      background-image: linear-gradient(
+          var(--color-state-default-hover),
+          var(--color-state-default-hover)
+        ),
+        linear-gradient(
+          var(--color-background-default-base),
+          var(--color-background-default-base)
+        );
+    }
+
+    &:active,
+    &:focus {
+      background-image: linear-gradient(
+          var(--color-state-default-focused),
+          var(--color-state-default-focused)
+        ),
+        linear-gradient(
+          var(--color-background-default-base),
+          var(--color-background-default-base)
+        );
+    }
+
+    ._title {
+      color: var(--color-text-default-high);
+    }
+
+    ._description {
+      color: var(--color-text-default-mid);
+    }
+  }
+
+  &.-color-accent {
+    background-image: linear-gradient(
+      var(--color-background-default-accent),
+      var(--color-background-default-accent)
+    );
+
+    &:hover {
+      background-image: linear-gradient(
+          var(--color-state-default-hover),
+          var(--color-state-default-hover)
+        ),
+        linear-gradient(
+          var(--color-background-default-accent),
+          var(--color-background-default-accent)
+        );
+    }
+
+    &:active,
+    &:focus {
+      background-image: linear-gradient(
+          var(--color-state-default-focused),
+          var(--color-state-default-focused)
+        ),
+        linear-gradient(
+          var(--color-background-default-accent),
+          var(--color-background-default-accent)
+        );
+    }
+
+    ._title {
+      color: var(--color-text-default-high);
+    }
+
+    ._description {
+      color: var(--color-text-default-mid);
+    }
+  }
+
+  &.-color-positive {
+    background-image: linear-gradient(
+      var(--color-impression-positive-container),
+      var(--color-impression-positive-container)
+    );
+
+    &:hover {
+      background-image: linear-gradient(
+          var(--color-state-default-hover),
+          var(--color-state-default-hover)
+        ),
+        linear-gradient(
+          var(--color-impression-positive-container),
+          var(--color-impression-positive-container)
+        );
+    }
+
+    &:active,
+    &:focus {
+      background-image: linear-gradient(
+          var(--color-state-default-focused),
+          var(--color-state-default-focused)
+        ),
+        linear-gradient(
+          var(--color-impression-positive-container),
+          var(--color-impression-positive-container)
+        );
+    }
+
+    ._title {
+      color: var(--color-impression-positive-on-container);
+    }
+
+    ._description {
+      color: var(--color-impression-positive-on-container);
+    }
+  }
+
+  &.-color-attention {
+    background-image: linear-gradient(
+      var(--color-impression-attention-container),
+      var(--color-impression-attention-container)
+    );
+
+    &:hover {
+      background-image: linear-gradient(
+          var(--color-state-default-hover),
+          var(--color-state-default-hover)
+        ),
+        linear-gradient(
+          var(--color-impression-attention-container),
+          var(--color-impression-attention-container)
+        );
+    }
+
+    &:active,
+    &:focus {
+      background-image: linear-gradient(
+          var(--color-state-default-focused),
+          var(--color-state-default-focused)
+        ),
+        linear-gradient(
+          var(--color-impression-attention-container),
+          var(--color-impression-attention-container)
+        );
+    }
+
+    ._title {
+      color: var(--color-impression-attention-on-container);
+    }
+
+    ._description {
+      color: var(--color-impression-attention-on-container);
+    }
+  }
+
+  &.-color-negative {
+    background-image: linear-gradient(
+      var(--color-impression-negative-container),
+      var(--color-impression-negative-container)
+    );
+
+    &:hover {
+      background-image: linear-gradient(
+          var(--color-state-default-hover),
+          var(--color-state-default-hover)
+        ),
+        linear-gradient(
+          var(--color-impression-negative-container),
+          var(--color-impression-negative-container)
+        );
+    }
+
+    &:active,
+    &:focus {
+      background-image: linear-gradient(
+          var(--color-state-default-focused),
+          var(--color-state-default-focused)
+        ),
+        linear-gradient(
+          var(--color-impression-negative-container),
+          var(--color-impression-negative-container)
+        );
+    }
+
+    ._title {
+      color: var(--color-impression-negative-on-container);
+    }
+
+    ._description {
+      color: var(--color-impression-negative-on-container);
+    }
+  }
+
+  ._body {
+    flex-grow: 1;
+  }
+}

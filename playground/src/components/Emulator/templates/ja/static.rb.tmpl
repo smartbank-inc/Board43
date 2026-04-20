@@ -1,0 +1,19 @@
+loop do
+  # 傾きセンサーをチェック：反転していたら 180° 回転
+  acc = imu.read_all[:acceleration]
+  flip = acc[0] < -0.5 if acc[0].abs > 0.5
+
+  # 絵を描画
+  {{HEIGHT}}.times do |y|
+    dst_y = flip ? {{H_MINUS_1}} - y : y
+    {{WIDTH}}.times do |x|
+      dst_x = flip ? {{W_MINUS_1}} - x : x
+      c = pattern[y][x]
+      led.set_rgb(dst_y * {{WIDTH}} + dst_x, c[0], c[1], c[2])
+    end
+  end
+
+  # 色を LED に反映してから少し待機
+  led.show
+  sleep_ms delay_ms
+end

@@ -1,0 +1,49 @@
+.selectable-field {
+  box-sizing: border-box;
+
+  ._input {
+    background-color: var(--color-field);
+    border-radius: var(--dimension-radius-medium);
+
+    &:has(select:user-invalid) {
+      outline: var(--dimension-border-large) solid
+        var(--color-impression-negative-base);
+      outline-offset: calc(-1 * var(--dimension-border-large));
+    }
+  }
+
+  select {
+    width: 100%;
+    min-height: var(--dimension-scale-48);
+    margin: 0;
+    padding: 0 var(--dimension-spacing-small);
+    color: var(--color-text-default-high);
+    font-size: var(--font-size-medium);
+    font-family: var(--font-ui);
+    line-height: var(--line-height-normal-medium);
+    background: none;
+    border: none;
+    border-radius: 0;
+    outline: none;
+    cursor: pointer;
+
+    &:disabled {
+      cursor: not-allowed;
+      opacity: var(--opacity-state-disabled);
+    }
+
+    &:user-invalid {
+      color: var(--color-impression-negative-base);
+    }
+  }
+
+  ._footer {
+    p {
+      color: var(--color-text-default-mid);
+
+      &.error {
+        color: var(--color-impression-negative-base);
+      }
+    }
+  }
+}

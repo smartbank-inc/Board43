@@ -1,0 +1,208 @@
+/*
+ * Design Tokens
+ *
+ * Semantic color, spacing, typography, and motion tokens used by the UI
+ * primitives in `src/components/` and the app-level styles.
+ */
+
+:root {
+  --color-background-default-base: #ffffff;
+  --color-background-default-accent: #fafafa;
+  --color-background-inverse-base: #141816;
+  --color-background-inverse-accent: #424645;
+  --color-border-default-high: rgba(0, 0, 0, 0.4);
+  --color-border-default-mid: rgba(0, 0, 0, 0.2);
+  --color-border-default-low: rgba(0, 0, 0, 0.1);
+  --color-border-inverse-high: rgba(255, 255, 255, 0.4);
+  --color-border-inverse-mid: rgba(255, 255, 255, 0.2);
+  --color-border-inverse-low: rgba(255, 255, 255, 0.1);
+  --color-border-on-scrim-high: rgba(255, 255, 255, 0.4);
+  --color-border-on-scrim-mid: rgba(255, 255, 255, 0.2);
+  --color-border-on-scrim-low: rgba(255, 255, 255, 0.1);
+  --color-impression-positive-base: #007aff;
+  --color-impression-positive-base-variant: #0062cc;
+  --color-impression-positive-container: #cce2ff;
+  --color-impression-positive-on-container: #003a85;
+  --color-impression-attention-base: #f59e0b;
+  --color-impression-attention-base-variant: #d97706;
+  --color-impression-attention-container: #fef3c7;
+  --color-impression-attention-on-container: #78350f;
+  --color-impression-negative-base: #ef4444;
+  --color-impression-negative-base-variant: #dc2626;
+  --color-impression-negative-container: #fee2e2;
+  --color-impression-negative-on-container: #7f1d1d;
+  --color-message-notice-base: #ef4444;
+  --color-message-notice-base-variant: #dc2626;
+  --color-message-notice-container: #fee2e2;
+  --color-message-notice-on-container: #7f1d1d;
+  --color-message-promotion-base: #eab308;
+  --color-message-promotion-base-variant: #ca8a04;
+  --color-message-promotion-container: #fef9c3;
+  --color-message-promotion-on-container: #713f12;
+  --color-interactive-base: #007aff;
+  --color-interactive-base-variant: #0062cc;
+  --color-interactive-container: #cce2ff;
+  --color-interactive-on-container: #003a85;
+  --color-scrim: rgba(0, 0, 0, 0.5);
+  --color-selected-base: #007aff;
+  --color-selected-base-variant: #0062cc;
+  --color-selected-container: #cce2ff;
+  --color-selected-on-container: #003a85;
+  --color-skeleton: rgba(0, 0, 0, 0.2);
+  --color-state-default-hover: rgba(0, 0, 0, 0.12);
+  --color-state-default-focused: rgba(0, 0, 0, 0.12);
+  --color-state-default-selected: rgba(0, 122, 255, 0.08);
+  --color-state-default-activated: rgba(0, 0, 0, 0.12);
+  --color-state-default-dragged: rgba(0, 0, 0, 0.08);
+  --color-state-inverse-hover: rgba(255, 255, 255, 0.24);
+  --color-state-inverse-focused: rgba(255, 255, 255, 0.24);
+  --color-state-inverse-selected: rgba(255, 255, 255, 0.16);
+  --color-state-inverse-activated: rgba(255, 255, 255, 0.24);
+  --color-state-inverse-dragged: rgba(255, 255, 255, 0.16);
+  --color-text-default-high: rgba(0, 0, 0, 0.87);
+  --color-text-default-mid: rgba(0, 0, 0, 0.6);
+  --color-text-default-low: rgba(0, 0, 0, 0.38);
+  --color-text-inverse-high: #ffffff;
+  --color-text-inverse-mid: rgba(255, 255, 255, 0.7);
+  --color-text-inverse-low: rgba(255, 255, 255, 0.5);
+  --color-text-on-scrim-high: #ffffff;
+  --color-text-on-scrim-mid: rgba(255, 255, 255, 0.7);
+  --color-text-on-scrim-low: rgba(255, 255, 255, 0.5);
+
+  --dimension-scale-0: 0px;
+  --dimension-scale-1: 1px;
+  --dimension-scale-2: 2px;
+  --dimension-scale-4: 4px;
+  --dimension-scale-8: 8px;
+  --dimension-scale-12: 12px;
+  --dimension-scale-16: 16px;
+  --dimension-scale-20: 20px;
+  --dimension-scale-24: 24px;
+  --dimension-scale-28: 28px;
+  --dimension-scale-32: 32px;
+  --dimension-scale-36: 36px;
+  --dimension-scale-40: 40px;
+  --dimension-scale-48: 48px;
+  --dimension-scale-56: 56px;
+  --dimension-scale-64: 64px;
+  --dimension-scale-72: 72px;
+  --dimension-scale-80: 80px;
+  --dimension-scale-96: 96px;
+  --dimension-scale-112: 112px;
+  --dimension-scale-120: 120px;
+  --dimension-scale-128: 128px;
+  --dimension-scale-144: 144px;
+  --dimension-scale-160: 160px;
+  --dimension-scale-168: 168px;
+  --dimension-scale-176: 176px;
+  --dimension-scale-192: 192px;
+  --dimension-scale-216: 216px;
+  --dimension-scale-224: 224px;
+  --dimension-scale-240: 240px;
+  --dimension-scale-256: 256px;
+  --dimension-scale-264: 264px;
+  --dimension-scale-288: 288px;
+  --dimension-scale-312: 312px;
+  --dimension-border-medium: 1px;
+  --dimension-border-large: 2px;
+  --dimension-border-extra-large: 4px;
+  --dimension-radius-extra-small: 0;
+  --dimension-radius-small: 0;
+  --dimension-radius-medium: 0;
+  --dimension-radius-large: 0;
+  --dimension-radius-extra-large: 0;
+  --dimension-radius-two-extra-large: 0;
+  --dimension-spacing-three-extra-small: 2px;
+  --dimension-spacing-two-extra-small: 4px;
+  --dimension-spacing-extra-small: 8px;
+  --dimension-spacing-small: 12px;
+  --dimension-spacing-medium: 16px;
+  --dimension-spacing-large: 24px;
+  --dimension-spacing-extra-large: 32px;
+  --dimension-spacing-two-extra-large: 48px;
+  --dimension-spacing-three-extra-large: 56px;
+  --dimension-spacing-four-extra-large: 72px;
+  --dimension-spacing-five-extra-large: 96px;
+  --dimension-spacing-six-extra-large: 128px;
+
+  --duration-scale-0: 0ms;
+  --duration-scale-50: 50ms;
+  --duration-scale-100: 100ms;
+  --duration-scale-150: 150ms;
+  --duration-scale-200: 200ms;
+  --duration-scale-250: 250ms;
+  --duration-scale-300: 300ms;
+  --duration-scale-350: 350ms;
+  --duration-scale-400: 400ms;
+  --duration-scale-450: 450ms;
+  --duration-scale-500: 500ms;
+  --duration-scale-550: 550ms;
+  --duration-scale-600: 600ms;
+  --duration-scale-700: 700ms;
+  --duration-scale-800: 800ms;
+  --duration-scale-900: 900ms;
+  --duration-scale-1000: 1000ms;
+
+  --font-size-three-extra-small: 10.6672px;
+  --font-size-two-extra-small: 11.6368px;
+  --font-size-extra-small: 12.8px;
+  --font-size-small: 14.2224px;
+  --font-size-medium: 16px;
+  --font-size-large: 18.2864px;
+  --font-size-extra-large: 21.332px;
+  --font-size-two-extra-large: 25.6px;
+  --font-size-three-extra-large: 32px;
+  --font-size-four-extra-large: 42.6672px;
+  --font-size-five-extra-large: 64px;
+  --font-size-six-extra-large: 128px;
+
+  --font-weight-normal: 400;
+  --font-weight-semi-bold: 600;
+  --font-weight-bold: 700;
+
+  --line-height-normal-three-extra-small: 16px;
+  --line-height-normal-two-extra-small: 20px;
+  --line-height-normal-extra-small: 20px;
+  --line-height-normal-small: 24px;
+  --line-height-normal-medium: 24px;
+  --line-height-normal-large: 28px;
+  --line-height-normal-extra-large: 32px;
+  --line-height-normal-two-extra-large: 40px;
+  --line-height-normal-three-extra-large: 48px;
+
+  --line-height-dense-three-extra-small: 12px;
+  --line-height-dense-two-extra-small: 16px;
+  --line-height-dense-extra-small: 16px;
+  --line-height-dense-small: 20px;
+  --line-height-dense-medium: 20px;
+  --line-height-dense-large: 24px;
+  --line-height-dense-extra-large: 28px;
+  --line-height-dense-two-extra-large: 36px;
+  --line-height-dense-three-extra-large: 40px;
+  --line-height-dense-four-extra-large: 64px;
+  --line-height-dense-five-extra-large: 80px;
+  --line-height-dense-six-extra-large: 160px;
+
+  --cubic-bezier-feedback: cubic-bezier(0, 0, 1, 1);
+  --cubic-bezier-motion-move: cubic-bezier(0.83, 0, 0.17, 1);
+  --cubic-bezier-motion-enter: cubic-bezier(0.24, 1, 0.32, 1);
+  --cubic-bezier-motion-exit: cubic-bezier(0.64, 0, 0.78, 0);
+  --opacity-state-disabled: 0.38;
+
+  --font-family-web-latin: "Open Sans";
+  --font-family-web-japanese: "Noto Sans JP";
+  --font-family-web-accent: Montserrat;
+}
+
+/*
+ * App-level font stack and convenience aliases composed from the tokens above.
+ */
+:root {
+  --font-ui: var(--font-family-web-japanese), var(--font-family-web-latin),
+    system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", Monaco, "Courier New", monospace;
+
+  --color-button-filled: var(--color-interactive-base);
+  --color-button-tonal: var(--color-interactive-container);
+  --color-field: var(--color-background-default-accent);
+}
