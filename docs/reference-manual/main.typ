@@ -1304,4 +1304,16 @@ This section is for builders who want to extend the board through the public exp
       size: 8pt,
     )[#sym.copyright #datetime.today().display("[year]") SmartBank, Inc.]
   ]
+
+  #v(10pt)
+  #block(width: 80%)[
+    #set text(size: 7.5pt, fill: gray)
+    #set par(justify: true, leading: 0.5em)
+    #align(left)[
+      This manual is licensed under #link("https://creativecommons.org/licenses/by-sa/4.0/")[Creative Commons Attribution-ShareAlike 4.0 International (CC BY-SA 4.0)]. You are free to share and adapt the material under the terms of that license.
+
+      #v(4pt)
+      Product names, trademarks, and registered trademarks referenced in this manual are the property of their respective owners. The license above does not grant any rights to use them.
+    ]
+  ]
 ]

@@ -256,3 +256,9 @@ SNSでのシェアも大歓迎です。 **#board43** をつけてもらえると
 
 **画面が固まった**
 → ブラウザをリロードして、再度 Connect してください。
+
+---
+
+## License
+
+[CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/), Attribution-ShareAlike 4.0 International.
