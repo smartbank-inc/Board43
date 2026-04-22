@@ -1,0 +1,42 @@
+Licensing for the `pcb` directory
+=================================
+
+Unless otherwise noted, all files in this directory and its subdirectories are
+licensed under the CERN Open Hardware Licence Version 2 - Weakly Reciprocal
+(CERN-OHL-W-2.0).
+
+A copy of the CERN-OHL-W-2.0 license text is provided in:
+  ./LICENSES/CERN-OHL-W-2.0.txt
+
+Exceptions
+----------
+
+The following library files/directories are derived from or include material from
+the KiCad official libraries (Copyright the KiCad community), and are licensed
+under the Creative Commons Attribution-ShareAlike 4.0 International license
+(CC BY-SA 4.0), with the following exception:
+
+  To the extent that the creation of electronic designs that use 'Licensed
+  Material' can be considered to be 'Adapted Material', then the copyright
+  holder waives article 3 of the license with respect to these designs and any
+  generated files which use data provided as part of the 'Licensed Material'.
+
+Files subject to this license:
+
+  - ./lib/Board43_KiCad.kicad_sym
+  - ./lib/Board43_KiCad.pretty/
+
+A copy of the CC BY-SA 4.0 license text is provided in:
+  ./LICENSES/CC-BY-SA-4.0.txt
+
+Notes
+-----
+
+Use of KiCad library data in the hardware design files in this repository does
+not by itself cause the surrounding design files to be licensed under CC BY-SA
+4.0. However, redistribution of KiCad library material itself, including modified
+versions, remains subject to CC BY-SA 4.0 and applicable attribution requirements.
+
+Where required by CERN-OHL-W-2.0, the Source Location for the Covered Source is
+the repository containing this directory, unless otherwise stated in a more
+specific notice in an individual file or subdirectory.

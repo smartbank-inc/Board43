@@ -37,9 +37,9 @@
         "other_text_thickness": 0.15,
         "other_text_upright": false,
         "pads": {
-          "drill": 0.0,
-          "height": 0.2,
-          "width": 0.88
+          "drill": 0.2,
+          "height": 0.5,
+          "width": 0.5
         },
         "silk_line_width": 0.1,
         "silk_text_italic": false,
@@ -476,10 +476,12 @@
   "libraries": {
     "pinned_footprint_libs": [
       "Board43",
-      "Logo"
+      "Logo",
+      "Board43_KiCad"
     ],
     "pinned_symbol_libs": [
-      "Board43"
+      "Board43",
+      "Board43_KiCad"
     ]
   },
   "meta": {
