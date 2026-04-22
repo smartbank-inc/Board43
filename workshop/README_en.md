@@ -32,16 +32,15 @@ The setup screen will appear.
 
 1. Leave the Baud Rate at **115200** and press the **Connect** button
 
-    <img src="images/1_connect_1.png" width="600">
+   <img src="images/1_connect_1_en.png" width="600">
 
 2. Select the serial port in the browser dialog (choose the one labeled "PicoRuby R2P2")
 
-    <img src="images/1_connect_2.png" width="600">
+   <img src="images/1_connect_2.png" width="600">
 
 The screen will switch to show a code editor on the left, an LED simulator on the upper right, and a console at the bottom.
 
-<img src="images/1_playground.png" width="1000">
-
+<img src="images/1_playground_en.png" width="1000">
 
 ---
 
@@ -61,14 +60,13 @@ led.show              # Send the buffer to the LEDs
 
 Press the **Run on Device** button at the top of the screen.
 
-<img src="images/2_upload_run.png" width="1000">
+<img src="images/2_upload_run_en.png" width="1000">
 
 If the entire LED matrix lights up red, it's working.
 
 Press **Stop on Device** before running the next code.
 
-<img src="images/2_stop.png" width="1000">
-
+<img src="images/2_stop_en.png" width="1000">
 
 ### 2-2. Change the Color of Specific LEDs
 
@@ -133,32 +131,31 @@ This is the main part. Use the **LED Simulator** in the upper right to create pi
 
 1. Press the **Upload image** button in the editor toolbar
 
-    <img src="images/4_upload_image.png" width="600">
+   <img src="images/4_upload_image_en.png" width="600">
 
 2. Select an image file
 3. It will be automatically converted to 16×16 and displayed in the simulator
-
 
 ### 4-2. Add Animation
 
 Choose a display mode from the simulator toolbar.
 
-<img src="images/4_animation.png" width="600">
+<img src="images/4_animation_en.png" width="600">
 
-| Option | Motion |
-| --- | --- |
-| Static | Static display |
-| ← | Scroll left |
-| → | Scroll right |
-| ↑ | Scroll up |
-| ↓ | Scroll down |
-| Fade | Fade in and out |
+| Option | Motion          |
+| ------ | --------------- |
+| Static | Static display  |
+| ←      | Scroll left     |
+| →      | Scroll right    |
+| ↑      | Scroll up       |
+| ↓      | Scroll down     |
+| Fade   | Fade in and out |
 
 ### 4-3. Preview in the Simulator
 
 Press the **Preview** button in the editor to auto-generate code and preview the animation in the simulator.
 
-<img src="images/4_preview.png" width="600">
+<img src="images/4_preview_en.png" width="600">
 
 ### 4-4. Transfer to Board43
 
@@ -207,10 +204,10 @@ https://github.com/smartbank-inc/Board43/workshop/examples
 
 **Editor Toolbar**
 
-| Button | Description |
-| --- | --- |
-| New File | Create a new file |
-| Open | Open a file saved on Board43 |
+| Button   | Description                      |
+| -------- | -------------------------------- |
+| New File | Create a new file                |
+| Open     | Open a file saved on Board43     |
 | Download | Save the current file to your PC |
 
 **Console**
