@@ -150,6 +150,7 @@ Choose a display mode from the simulator toolbar.
 | ↑      | Scroll up       |
 | ↓      | Scroll down     |
 | Fade   | Fade in and out |
+| Rotate | Rotate          |
 
 ### 4-3. Preview in the Simulator
 
