@@ -13,7 +13,7 @@ A browser-based PicoRuby IDE for the Board43.
   - Run Ruby code in-browser via PicoRuby WASM
   - 16x16 LED matrix preview
   - Pixel paint editor with color picker, undo/redo
-  - Image upload (converts to LED pixel data)
+  - Image upload (converts to LED pixel data, via [board43-image-transformer](./lib/board43-image-transformer) WASM)
   - Animation modes: Static, Scroll (Left/Right/Up/Down), Fade, Rotate
 
 ### Device Connection
