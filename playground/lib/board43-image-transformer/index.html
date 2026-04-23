@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>oneboard-image-transform</title>
+  <style>
+    #output { display: grid; grid-template-columns: repeat(auto-fill, 256px); gap: 1rem; justify-content: center; margin-top: 1rem; }
+    canvas { image-rendering: pixelated; border: 1px solid #ccc; }
+  </style>
+</head>
+<body>
+  <input type="file" id="file" accept="image/*" multiple>
+  <div id="output"></div>
+
+  <script type="module">
+    import init, { transform } from "./pkg/board43_image_transformer.js";
+
+    await init();
+
+    function renderToCanvas(rgb) {
+      const canvas = document.createElement("canvas");
+      canvas.width = 256;
+      canvas.height = 256;
+      const ctx = canvas.getContext("2d");
+      ctx.imageSmoothingEnabled = false;
+
+      const imageData = ctx.createImageData(16, 16);
+      for (let i = 0; i < 256; i++) {
+        imageData.data[i * 4]     = rgb[i * 3];
+        imageData.data[i * 4 + 1] = rgb[i * 3 + 1];
+        imageData.data[i * 4 + 2] = rgb[i * 3 + 2];
+        imageData.data[i * 4 + 3] = 255;
+      }
+
+      createImageBitmap(imageData).then((bmp) => {
+        ctx.drawImage(bmp, 0, 0, 256, 256);
+      });
+
+      return canvas;
+    }
+
+    document.getElementById("file").addEventListener("change", async (e) => {
+      const output = document.getElementById("output");
+      output.innerHTML = "";
+
+      for (const file of e.target.files) {
+        const bytes = new Uint8Array(await file.arrayBuffer());
+        const rgb = transform(bytes);
+        output.appendChild(renderToCanvas(rgb));
+      }
+    });
+  </script>
+</body>
+</html>

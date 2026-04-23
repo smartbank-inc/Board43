@@ -1,0 +1,25 @@
+[package]
+name = "board43-image-transformer"
+version = "0.2.0"
+edition = "2024"
+description = "Transforms images into 16×16 RGB data for WS2812 LED matrices."
+
+[package.metadata.wasm-pack.profile.release]
+wasm-opt = false
+
+[lib]
+crate-type = ["cdylib", "rlib"]
+
+[dependencies]
+image = { version = "0.25.10", default-features = false, features = ["png", "jpeg", "gif", "webp", "bmp"] }
+
+[target.'cfg(not(target_arch = "wasm32"))'.dependencies]
+clap = { version = "4.5", features = ["derive"] }
+
+[target.'cfg(target_arch = "wasm32")'.dependencies]
+wasm-bindgen = "0.2"
+
+[profile.release]
+codegen-units = 1
+lto = true
+strip = true
