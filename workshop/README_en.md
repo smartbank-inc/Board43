@@ -199,7 +199,7 @@ Tilt the board to play a musical scale. The LED shows the current note position.
 
 The sample code is available on GitHub. Try it on your own Board43.
 
-https://github.com/smartbank-inc/Board43/workshop/examples
+https://github.com/smartbank-inc/Board43/tree/main/workshop/examples
 
 ### Other Features
 
