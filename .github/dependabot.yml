@@ -1,0 +1,23 @@
+version: 2
+
+updates:
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+    cooldown:
+      default-days: 7
+
+  - package-ecosystem: npm
+    directory: /playground
+    schedule:
+      interval: weekly
+    # Keep in sync with minimumReleaseAge in playground/pnpm-workspace.yaml
+    # (10080 minutes = 7 days); pnpm refuses to install anything newer.
+    cooldown:
+      default-days: 7
+    groups:
+      npm-minor-and-patch:
+        update-types:
+          - minor
+          - patch
