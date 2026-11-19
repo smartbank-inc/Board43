@@ -19,7 +19,7 @@
     "@codemirror/search": "^6.6.0",
     "@codemirror/state": "^6.5.4",
     "@codemirror/view": "^6.39.11",
-    "@picoruby/wasm-wasi": "^0.9.6",
+    "@picoruby/wasm-wasi": "^4.0.5",
     "clsx": "^2.1.1",
     "ghostty-web": "^0.4.0",
     "react": "^19.2.0",

@@ -30,8 +30,8 @@ importers:
         specifier: ^6.39.11
         version: 6.43.15
       '@picoruby/wasm-wasi':
-        specifier: ^0.9.6
-        version: 0.9.6
+        specifier: ^4.0.5
+        version: 4.0.5
       clsx:
         specifier: ^2.1.1
         version: 2.1.1
@@ -184,8 +184,8 @@ packages:
   '@oxc-project/types@0.156.0':
     resolution: {integrity: sha512-1Duyg48TdJNdyhEB8Xn1L36bT9Pv6GUtlKjHxOys8xkaF/rQq3XJE+bAurSK/AgIz5mGFsb77cn9Pb20+WCScw==}
 
-  '@picoruby/wasm-wasi@0.9.6':
-    resolution: {integrity: sha512-qSLVm+pBfDhwGfHMvCiNDRIK0E+BdKUcbCsmyvirpyNETIxZ5Wt38OAafAM3mFrPO4PeZEiPPoJpz9bBH7xUVw==}
+  '@picoruby/wasm-wasi@4.0.5':
+    resolution: {integrity: sha512-D8sxFR5dsG9PDaJIhWExBCBUQ6fajVIIFT0GLIyfkFrCTcl8QkTQ1by+l/2BkIabcPBuCw6Z+qFoa5DGBXGFbg==}
 
   '@rolldown/binding-android-arm-eabi@1.2.19':
     resolution: {integrity: sha512-e+Ebe0WT+9tbXmNKPIiC8YrWAHYwug3m6i4p3rZGGulfZri1jtI4HslT+OZnFf/OIHowWF71DTlHwXBP2SiA7A==}
@@ -651,7 +651,7 @@ snapshots:
 
   '@oxc-project/types@0.156.0': {}
 
-  '@picoruby/wasm-wasi@0.9.6': {}
+  '@picoruby/wasm-wasi@4.0.5': {}
 
   '@rolldown/binding-android-arm-eabi@1.2.19':
     optional: true
